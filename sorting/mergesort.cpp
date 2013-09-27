@@ -5,22 +5,25 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <iterator>
 
 using namespace std;
 
-void printList(const vector<unsigned long long> &vec)
+template <class T>
+void printList(const vector<T> &vec)
 {
-  for(const unsigned long long &i:vec)
+  for(const T &i:vec)
   {
-    cout << i << " ";
+    cout << i << endl;
   }
 }
 
 //actual algorithm
-vector<unsigned long long> mergesort(vector<unsigned long long> &items, unsigned int start, unsigned int end)
+template <class T>
+vector<T> mergesort(const vector<T> &items, unsigned int start, unsigned int end)
 {
   const unsigned int size = end - start;
-  vector<unsigned long long> merged(size); //reserve capacity of what we're returning
+  vector<T> merged(size); //reserve capacity of what we're returning
 
   if(size == 1)
   {
@@ -29,8 +32,8 @@ vector<unsigned long long> mergesort(vector<unsigned long long> &items, unsigned
   else
   {
     unsigned int mid = (end + start) / 2;
-    vector<unsigned long long> left = mergesort(items, start, mid);
-    vector<unsigned long long> right = mergesort(items, mid, end);
+    vector<T> left = mergesort(items, start, mid);
+    vector<T> right = mergesort(items, mid, end);
     //now merge and return
     unsigned int lIdx = 0;
     unsigned int rIdx = 0;
@@ -55,22 +58,15 @@ vector<unsigned long long> mergesort(vector<unsigned long long> &items, unsigned
 
 int main(int argc, char ** argv)
 {
-  vector<unsigned long long> input;
-  unsigned long long item;
-  while(cin >> item)
-  {
-    input.push_back(item);
-  }
+  istream_iterator<unsigned long long> eos;
+  istream_iterator<unsigned long long> input_it(cin);
+  vector<unsigned long long> input {input_it, eos};
   
-  cout << "Sorting " << input.size() << " items." << endl;
+  cerr << "Sorting " << input.size() << " items." << endl;
   
-  vector<unsigned long long> sorted = mergesort(input, 0, input.size());
+  vector<unsigned long long> sorted = mergesort<unsigned long long>(input, 0, input.size());
   
-  cout << "Sorted list:" << endl;
-  for(unsigned long long item:sorted)
-  {
-    cout << item << " ";
-  }
+  cerr << "Sorted list: "; printList(sorted); cerr << endl;
 
   return 0;
 }
